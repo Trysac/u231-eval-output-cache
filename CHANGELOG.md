@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `eval_output_cache` with canonical cache keys, a bounded on-disk store, and a caching LLM port.
 - Initial project structure from the factory utility template.
