@@ -1,0 +1,16 @@
+# eval-output-cache
+
+> Content-addressed cache of model outputs for repeatable evaluations: canonical request keys, a bounded on-disk store and a caching LLM port Python package `trysac-eval-output-cache`, import name `eval_output_cache`, MIT licensed,
+> Python >= 3.10, no runtime dependencies.
+
+## Docs
+
+- [README](README.md): problem, install, usage example
+- [AGENTS](AGENTS.md): commands, folder map, conventions, limits
+- [Architecture](docs/ARCHITECTURE.md): shape of the package and its public API
+- [Testing](docs/TESTING.md): how to run and extend the tests
+
+## Optional
+
+- [Stack](docs/STACK.md): tools used and discarded
+- [Changelog](CHANGELOG.md): release history
