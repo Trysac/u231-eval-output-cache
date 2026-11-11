@@ -2,28 +2,26 @@
 
 ## Running
 
+The tests are in `tests/test_eval_output_cache.py` and use pytest and `tmp_path`. Run:
+
 ```sh
-uv run pytest --cov=eval_output_cache   # tests with coverage report
-uv run python scripts/check.py      # every gate, as CI and the factory run it
+pytest tests/test_eval_output_cache.py
 ```
 
 ## Policy
 
-- Branch coverage of `src/eval_output_cache` must stay at or above 80 %; the gate fails below it.
-- Tests exercise the public API (`import eval_output_cache`) and assert every observable effect:
-  return values, raised exceptions and their messages.
-- Each bug fix starts with a failing test that reproduces it.
-- Tests are deterministic: no network, no wall clock, no dependence on test order.
+The suite imports the public package `eval_output_cache` and checks exact values. It covers:
+
+- `cache_key`: exact SHA-256 digest, sensitivity to model, message and parameter changes, parameter-order irrelevance, rejection of NaN, invalid roles, depth greater than 8, more than 1000 messages, content longer than 1,000,000 characters, Unicode content with `ensure_ascii=False`, and an empty message list.
+- `OutputCache`: persistence across instances, string directory input, unknown keys returning `None`, invalid keys raising `invalid_key`, eviction with an injected clock and `max_entries=2`, overwrite without eviction, rejection of outputs larger than `max_output_chars`, corrupt files returning `None` and incrementing `corrupt`, and empty output strings cached and returned as hits.
+- `CachingLLM`: cached results, `max_tokens` participating in the key so a different value calls the inner LLM again and raises `RecordingExhaustedError`, and replay of empty output strings.
+- `FakeLLM` calling its function and `RecordedLLM` raising `RecordingExhaustedError` when scripted replies run out.
+- `on_event`: payloads containing the expected `write`, `hit` and `miss` event and key pairs.
 
 ## Tiers
 
-- Local tier (every gate run, coverage measured here): unit and property tests, plus conformance on small
-  fixtures kept in the repository.
-- CI tier: conformance that needs an external tool or a download. Mark them `@pytest.mark.conformance`; `scripts/check.py` deselects them locally
-  (unless `FABRICA_CI=1`). The CI `conformance` job sets `FABRICA_CI=1` and runs the full suite. Tools are installed
-  by the optional `ci/conformance-setup.sh` (bash, CI only; verify every download against a pinned SHA-256), and
-  tagged tests skip cleanly when their tool is missing.
+The supplied code has a single test module; it defines no separate local, CI or conformance tiers and no marker-based selection.
 
 ## Layout
 
-`tests/test_<module>.py` mirrors each public module. Shared fixtures go in `tests/conftest.py`.
+`tests/test_eval_output_cache.py` is the only test file. No `tests/conftest.py` or shared fixture file is included.
